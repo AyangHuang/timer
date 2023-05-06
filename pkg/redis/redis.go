@@ -12,13 +12,13 @@ type Client struct {
 	pool *redis.Pool
 }
 
-func GetClient(config conf.RedisConfig) *Client {
+func GetClient(config *conf.RedisConfig) *Client {
 	return &Client{
 		pool: getRedisPool(config),
 	}
 }
 
-func getRedisPool(config conf.RedisConfig) *redis.Pool {
+func getRedisPool(config *conf.RedisConfig) *redis.Pool {
 	return &redis.Pool{
 		MaxIdle:     config.MaxIdle,
 		IdleTimeout: time.Duration(config.IdleTimeoutSeconds) * time.Second,
@@ -41,7 +41,7 @@ func getRedisPool(config conf.RedisConfig) *redis.Pool {
 	}
 }
 
-func newRedisConn(config conf.RedisConfig) (redis.Conn, error) {
+func newRedisConn(config *conf.RedisConfig) (redis.Conn, error) {
 	conn, err := redis.Dial(config.Network, config.Address, redis.DialPassword(config.Password))
 	if err != nil {
 		logger.Errorf("Failed to connect to redis, cased by %s", err)

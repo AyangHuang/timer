@@ -4,6 +4,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const TimerTable = "timer"
+
 // Timer 定时器定义
 type Timer struct {
 	gorm.Model

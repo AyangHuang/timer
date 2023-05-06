@@ -7,8 +7,8 @@
 # trigger:
 #   zrangeGapSeconds: 1
 #   workersNum: 10000
-# webserver:
-#   port: 8092
+webserver:
+   port: 8080
 # migrator:
 #   workersNum: 1000
 #   migrateStepMinutes: 60

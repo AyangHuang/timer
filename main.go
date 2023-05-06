@@ -1,9 +1,12 @@
 package main
 
 import (
-	_ "timer/app"
+	"timer/app"
 )
 
 func main() {
-
+	webApp := app.GerWebApp()
+	webApp.Start()
+	var c chan struct{}
+	<-c
 }

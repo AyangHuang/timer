@@ -14,7 +14,7 @@ type GoWorkerPool struct {
 	pool *ants.Pool
 }
 
-func NewGoWorkerPool(config conf.PoolConfig) *GoWorkerPool {
+func NewGoWorkerPool(config *conf.PoolConfig) *GoWorkerPool {
 	pool, err := ants.NewPool(config.Size, ants.WithExpiryDuration(time.Duration(config.ExpireSeconds)*time.Second))
 	if err != nil {
 		panic(err)

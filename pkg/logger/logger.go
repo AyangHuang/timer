@@ -46,7 +46,7 @@ func NewOptions(opts ...Option) Options {
 
 	options := Options{
 		LogName:    "app",
-		LogLevel:   "info",
+		LogLevel:   "debug",
 		FileName:   "app.log",
 		MaxAge:     10,
 		MaxSize:    100,

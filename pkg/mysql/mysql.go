@@ -6,16 +6,17 @@ import (
 	"timer/common/conf"
 )
 
-var DB *gorm.DB
+var db *gorm.DB
 
-func GetClient(config conf.MySQLConfig) {
+func GetClient(config *conf.MySQLConfig) *gorm.DB {
 	var err error
 	dsn := config.DSN
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	sqlDB, err := DB.DB()
+	sqlDB, err := db.DB()
 	sqlDB.SetMaxIdleConns(config.MaxIdleConns)
 	sqlDB.SetMaxOpenConns(config.MaxOpenConns)
+	return db
 }

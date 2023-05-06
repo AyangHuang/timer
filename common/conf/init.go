@@ -26,6 +26,7 @@ func init() {
 	defaultMySQLConfig = gConf.Mysql
 	defaultRedisConfig = gConf.Redis
 	defaultPoolConfig = gConf.Pool
+	defaultWebServerAppConf = gConf.WebServer
 }
 
 // gConf 兜底配置，即默认配置。后续配置文件会写入覆盖
@@ -53,7 +54,8 @@ var gConf GlobalConf = GlobalConf{
 }
 
 type GlobalConf struct {
-	Mysql *MySQLConfig `yaml:"mysql"`
-	Redis *RedisConfig `yaml:"redis"`
-	Pool  *PoolConfig  `yaml:"pool"`
+	Mysql     *MySQLConfig        `yaml:"mysql"`
+	Redis     *RedisConfig        `yaml:"redis"`
+	Pool      *PoolConfig         `yaml:"pool"`
+	WebServer *WebServerAppConfig `yaml:"webserver"`
 }
