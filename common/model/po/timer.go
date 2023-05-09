@@ -2,6 +2,8 @@ package po
 
 import (
 	"gorm.io/gorm"
+	"time"
+	"timer/common/consts"
 )
 
 const TimerTable = "timer"
@@ -14,4 +16,17 @@ type Timer struct {
 	Status          int    `gorm:"column:status;NOT NULL" json:"status,omitempty"`                       // 定时器定义状态，1:未激活, 2:已激活
 	Cron            string `gorm:"column:cron;NOT NULL" json:"cron,omitempty"`                           // 定时器定时配置
 	NotifyHTTPParam string `gorm:"column:notify_http_param;NOT NULL" json:"notify_http_param,omitempty"` // Http 回调参数
+}
+
+func (t *Timer) BatchTasksFromTimer(executeTimes []time.Time) []*Task {
+	tasks := make([]*Task, 0, len(executeTimes))
+	for _, executeTime := range executeTimes {
+		tasks = append(tasks, &Task{
+			App:      t.App,
+			TimerID:  t.Model.ID,
+			Status:   consts.NotRunned.ToInt(),
+			RunTimer: executeTime,
+		})
+	}
+	return tasks
 }

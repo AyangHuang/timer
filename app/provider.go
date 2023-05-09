@@ -4,7 +4,8 @@ import (
 	"go.uber.org/dig"
 	webApp "timer/app/webserver"
 	"timer/common/conf"
-	mysqlDao "timer/dao/mysql"
+	"timer/dao/task"
+	mysqlDao "timer/dao/timer"
 	"timer/pkg/cron"
 	"timer/pkg/mysql"
 	"timer/pkg/pool"
@@ -25,6 +26,8 @@ func init() {
 }
 
 func provideConf() {
+	contain.Provide(conf.GetDefaultMigratorAppConfig)
+	contain.Provide(conf.GetDefaultSchedulerAppConfig)
 	contain.Provide(conf.GetDefaultRedisConfig)
 	contain.Provide(conf.GetDefaultMySQLConfig)
 	contain.Provide(conf.GetDefaultPoolConfig)
@@ -41,6 +44,8 @@ func providePKG() {
 
 func provideDao() {
 	contain.Provide(mysqlDao.NewTimerDao)
+	contain.Provide(task.NewTaskDao)
+	contain.Provide(task.NewTaskCache)
 }
 
 func provideServer() {

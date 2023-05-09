@@ -1,5 +1,4 @@
 # scheduler:
-#   workersNum: 100
 #   bucketsNum: 20
 #   tryLockSeconds: 70
 #   tryLockGapMilliSeconds: 100
@@ -9,14 +8,13 @@
 #   workersNum: 10000
 webserver:
    port: 8080
-# migrator:
-#   workersNum: 1000
+#migrator:
 #   migrateStepMinutes: 60
 #   migrateTryLockMinutes: 20
 #   migrateSuccessExpireMinutes: 120
 #   timerDetailCacheMinutes: 2
 mysql:
-   dsn:  "root:123456@tcp(127.0.0.1:3306)/timer"
+   dsn:  "root:123456@tcp(127.0.0.1:3306)/timer?charset=utf8mb4&parseTime=True&loc=Local"
 #   maxOpenConns: 100
 #   maxIdleConns: 50
 # pool:
@@ -31,3 +29,7 @@ redis:
 #   idleTimeout: 10
 #   maxActive: 5000
 #   wait: true
+#pool:
+#   size: 10000
+#   expireSeconds: 30
+#   noBlocking: false

@@ -16,6 +16,11 @@ type CreateTimerRespData struct {
 	Success bool `json:"success"`
 }
 
+type TimerReq struct {
+	App string `form:"app" json:"app" binding:"required"`
+	ID  uint   `form:"id" json:"id" binding:"required"`
+}
+
 type Timer struct {
 	ID              uint               `json:"id,omitempty"`
 	App             string             `json:"app,omitempty" binding:"required"`             // 所属应用的名称

@@ -23,6 +23,8 @@ func init() {
 	}
 
 	// 序列化到各包变量中，方便 provide 到 contain 中
+	defaultSchedulerAppConfig = gConf.Scheduler
+	defaultMigratorAppConfig = gConf.Migrator
 	defaultMySQLConfig = gConf.Mysql
 	defaultRedisConfig = gConf.Redis
 	defaultPoolConfig = gConf.Pool
@@ -31,6 +33,29 @@ func init() {
 
 // gConf 兜底配置，即默认配置。后续配置文件会写入覆盖
 var gConf GlobalConf = GlobalConf{
+	Scheduler: &SchedulerAppConfig{
+		// 分桶数量
+		BucketsNum: 20,
+		// 调度器获取分布式锁时初设的过期时间，单位：s
+		TryLockSeconds: 70,
+		// 调度器每次尝试获取分布式锁的时间间隔，单位：毫秒
+		TryLockGapMilliSeconds: 100,
+		// 时间片执行成功后，更新的分布式锁时间，单位：s
+		SuccessExpireSeconds: 130,
+	},
+
+	Migrator: &MigratorAppConfig{
+		// 一级每次迁移数据的时间间隔，单位：min
+		MigrateStepMinutes: 60,
+		// 迁移成功更新的锁过期时间，单位：min
+		MigrateSuccessExpireMinutes: 120,
+		// 迁移器获取锁时，初设的过期时间，单位：min
+		MigrateTryLockMinutes: 20,
+		// 迁移器提前将定时器数据缓存到内存中的保存时间，单位：min
+		// 2 级迁移时间
+		TimerDetailCacheMinutes: 2,
+	},
+
 	Redis: &RedisConfig{
 		Network: "tcp",
 		// 最大空闲连接数
@@ -54,6 +79,8 @@ var gConf GlobalConf = GlobalConf{
 }
 
 type GlobalConf struct {
+	Scheduler *SchedulerAppConfig `yaml:"scheduler"`
+	Migrator  *MigratorAppConfig  `yaml:"*migrator"`
 	Mysql     *MySQLConfig        `yaml:"mysql"`
 	Redis     *RedisConfig        `yaml:"redis"`
 	Pool      *PoolConfig         `yaml:"pool"`

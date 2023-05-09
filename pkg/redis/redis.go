@@ -53,3 +53,41 @@ func newRedisConn(config *conf.RedisConfig) (redis.Conn, error) {
 func (c *Client) GetConn(ctx context.Context) (redis.Conn, error) {
 	return c.pool.GetContext(ctx)
 }
+
+type Command struct {
+	Name string
+	Args []interface{}
+}
+
+func NewExpireCommand(args ...interface{}) *Command {
+	return &Command{
+		Name: "EXPIRE",
+		Args: args,
+	}
+}
+
+func NewZAddCommand(args ...interface{}) *Command {
+	return &Command{
+		Name: "ZADD",
+		Args: args,
+	}
+}
+
+func (c *Client) Transaction(ctx context.Context, commands ...*Command) ([]interface{}, error) {
+	if len(commands) == 0 {
+		return nil, nil
+	}
+
+	conn, err := c.pool.GetContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer conn.Close()
+
+	_ = conn.Send("MULTI")
+	for _, command := range commands {
+		_ = conn.Send(command.Name, command.Args...)
+	}
+
+	return redis.Values(conn.Do("EXEC"))
+}

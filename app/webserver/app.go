@@ -21,6 +21,12 @@ type Server struct {
 	conf *conf.WebServerAppConfig
 }
 
+// NewServer title 和 version，不然不符合 swagger 标准，不能导入 postman
+// swag init -g ./app/webserver/app.go 指定搜索该文件
+// @title           timer API
+// @version         0.0.0
+// @host 127.0.0.1:8080
+// @BasePath /api/dev
 func NewServer(timerHandler *TimerHandler, taskHandler *TaskHandler, conf *conf.WebServerAppConfig) *Server {
 	server := &Server{
 		engine:       gin.Default(),
@@ -32,9 +38,11 @@ func NewServer(timerHandler *TimerHandler, taskHandler *TaskHandler, conf *conf.
 	// 跨域和 设置 http header 头选项
 	server.engine.Use(CrosHandler())
 
+	baseGroup := server.engine.Group("api/dev")
+
 	// 设置路由组
-	server.timerRouter = server.engine.Group("api/timer/v1/timer")
-	server.taskRouter = server.engine.Group("api/task/v1/task")
+	server.timerRouter = baseGroup.Group("/timer")
+	server.taskRouter = baseGroup.Group("/task")
 
 	// 注册路由
 	// swagger
@@ -61,6 +69,9 @@ func (s *Server) registerBaseRouter() {
 
 func (s *Server) registerTimerRouter() {
 	s.timerRouter.POST("/create", s.timerHandler.CreateTimer)
+	s.timerRouter.DELETE("/delete", s.timerHandler.DeleteTimer)
+	s.timerRouter.POST("/enable", s.timerHandler.EnableTimer)
+	s.timerRouter.POST("/unable", s.timerHandler.UnableTimer)
 }
 
 func (s *Server) registerTaskRouter() {
