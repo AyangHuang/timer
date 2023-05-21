@@ -2,6 +2,10 @@ package consts
 
 const (
 	MinuteFormat = "2006-01-02 15:04"
+	HourFormat   = "2006-01-02 15"
+	DayFormat    = "2006-01-02"
+	// BloomFilterKeyExpireSeconds 一天过期
+	BloomFilterKeyExpireSeconds = 24 * 60 * 60
 )
 
 type TimerStatus int

@@ -5,14 +5,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"timer/common/model/vo"
 	"timer/pkg/logger"
-	"timer/service/webserver"
+	"timer/service/webservice"
 )
 
 type TimerHandler struct {
 	timerServer timerServer
 }
 
-func NewTimerHandler(server *webserver.TimerServer) *TimerHandler {
+func NewTimerHandler(server *webservice.TimerServer) *TimerHandler {
 	return &TimerHandler{
 		timerServer: server,
 	}
@@ -134,7 +134,7 @@ func (handler *TimerHandler) UnableTimer(ctx *gin.Context) {
 }
 
 // 编译时检查
-var _ timerServer = &webserver.TimerServer{}
+var _ timerServer = &webservice.TimerServer{}
 
 type timerServer interface {
 	CreateTimer(context.Context, *vo.Timer) (uint, error)

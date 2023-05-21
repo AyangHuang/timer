@@ -1,6 +1,7 @@
 package conf
 
 type MigratorAppConfig struct {
+	WorkersNum                  int `yaml:"workersNum"`
 	MigrateStepMinutes          int `yaml:"migrateStepMinutes"`
 	MigrateSuccessExpireMinutes int `yaml:"migrateSuccessExpireMinutes"`
 	MigrateTryLockMinutes       int `yaml:"migrateTryLockMinutes"`

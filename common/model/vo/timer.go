@@ -66,3 +66,31 @@ func (timer *Timer) ToPo() (*po.Timer, error) {
 
 	return poTimer, nil
 }
+
+func NewTimer(timer *po.Timer) (*Timer, error) {
+	var param NotifyHTTPParam
+	if err := json.Unmarshal([]byte(timer.NotifyHTTPParam), &param); err != nil {
+		return nil, err
+	}
+
+	return &Timer{
+		ID:              timer.ID,
+		App:             timer.App,
+		Name:            timer.Name,
+		Status:          consts.TimerStatus(timer.Status),
+		Cron:            timer.Cron,
+		NotifyHTTPParam: &param,
+	}, nil
+}
+
+func NewTimers(timers []*po.Timer) ([]*Timer, error) {
+	vTimers := make([]*Timer, 0, len(timers))
+	for _, timer := range timers {
+		vTimer, err := NewTimer(timer)
+		if err != nil {
+			return nil, err
+		}
+		vTimers = append(vTimers, vTimer)
+	}
+	return vTimers, nil
+}

@@ -22,7 +22,7 @@ type Server struct {
 }
 
 // NewServer title 和 version，不然不符合 swagger 标准，不能导入 postman
-// swag init -g ./app/webserver/app.go 指定搜索该文件
+// swag init -g ./app/webservice/app.go 指定搜索该文件
 // @title           timer API
 // @version         0.0.0
 // @host 127.0.0.1:8080

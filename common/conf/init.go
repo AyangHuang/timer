@@ -24,10 +24,10 @@ func init() {
 
 	// 序列化到各包变量中，方便 provide 到 contain 中
 	defaultSchedulerAppConfig = gConf.Scheduler
+	defaultTriggerAppConfig = gConf.Trigger
 	defaultMigratorAppConfig = gConf.Migrator
 	defaultMySQLConfig = gConf.Mysql
 	defaultRedisConfig = gConf.Redis
-	defaultPoolConfig = gConf.Pool
 	defaultWebServerAppConf = gConf.WebServer
 }
 
@@ -44,7 +44,15 @@ var gConf GlobalConf = GlobalConf{
 		SuccessExpireSeconds: 130,
 	},
 
+	Trigger: &TriggerAppConfig{
+		// 触发器轮询定时任务 zset 的时间间隔，单位：s
+		ZRangeGapSeconds: 1,
+		// 并发协程数
+		WorkersNum: 10000,
+	},
+
 	Migrator: &MigratorAppConfig{
+		WorkersNum: 1000,
 		// 一级每次迁移数据的时间间隔，单位：min
 		MigrateStepMinutes: 60,
 		// 迁移成功更新的锁过期时间，单位：min
@@ -71,11 +79,6 @@ var gConf GlobalConf = GlobalConf{
 		MaxOpenConns: 100,
 		MaxIdleConns: 50,
 	},
-	Pool: &PoolConfig{
-		Size:          10000,
-		ExpireSeconds: 60,
-		nonBlocking:   false,
-	},
 }
 
 type GlobalConf struct {
@@ -83,6 +86,6 @@ type GlobalConf struct {
 	Migrator  *MigratorAppConfig  `yaml:"*migrator"`
 	Mysql     *MySQLConfig        `yaml:"mysql"`
 	Redis     *RedisConfig        `yaml:"redis"`
-	Pool      *PoolConfig         `yaml:"pool"`
-	WebServer *WebServerAppConfig `yaml:"webserver"`
+	WebServer *WebServerAppConfig `yaml:"webservice"`
+	Trigger   *TriggerAppConfig   `yaml:"trigger"`
 }

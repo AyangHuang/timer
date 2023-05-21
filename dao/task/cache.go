@@ -7,7 +7,7 @@ import (
 	"timer/common/conf"
 	"timer/common/consts"
 	"timer/common/model/po"
-	utils "timer/common/utils/timer"
+	"timer/common/utils"
 	"timer/pkg/redis"
 )
 
@@ -54,8 +54,29 @@ func (t *TaskCache) GetTableName(task *po.Task) string {
 	return fmt.Sprintf("%s:%d", task.RunTimer.Format(consts.MinuteFormat), int64(task.TimerID)%int64(maxBucket))
 }
 
+func (t *TaskCache) GetTasksByTime(ctx context.Context, table string, start, end int64) ([]*po.Task, error) {
+	// zrangebyscore 获取 score 指定范围内内 value
+	timerIDUnixs, err := t.rdb.ZrangeByScore(ctx, table, start, end-1)
+	if err != nil {
+		return nil, err
+	}
+
+	tasks := make([]*po.Task, 0, len(timerIDUnixs))
+	for _, timerIDUnix := range timerIDUnixs {
+		timerID, unix, _ := utils.SplitTimerIDUnix(timerIDUnix)
+		tasks = append(tasks, &po.Task{
+			TimerID:  timerID,
+			RunTimer: time.UnixMilli(unix),
+		})
+	}
+
+	return tasks, nil
+}
+
 var _ cacheClient = &redis.Client{}
 
 type cacheClient interface {
 	Transaction(ctx context.Context, commands ...*redis.Command) ([]interface{}, error)
+	ZrangeByScore(ctx context.Context, table string, score1, score2 int64) ([]string, error)
+	Expire(ctx context.Context, key string, expireSeconds int64) error
 }

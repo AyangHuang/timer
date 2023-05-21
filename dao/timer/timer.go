@@ -17,16 +17,24 @@ func NewTimerDao(db *gorm.DB) *TimerDao {
 	}
 }
 
+func (dao *TimerDao) TableWithContext(ctx context.Context) *gorm.DB {
+	return dao.db.WithContext(ctx).Table(po.TimerTable)
+}
+
+func (dao *TimerDao) Table() *gorm.DB {
+	return dao.db.Table(po.TimerTable)
+}
+
 func (dao *TimerDao) CreateTimer(ctx context.Context, timer *po.Timer) (uint, error) {
-	return timer.ID, dao.db.WithContext(ctx).Table(po.TimerTable).Create(timer).Error
+	return timer.ID, dao.TableWithContext(ctx).Create(timer).Error
 }
 
 func (dao *TimerDao) DeleteTimer(ctx context.Context, id uint) error {
-	return dao.db.WithContext(ctx).Table(po.TimerTable).Delete(&po.Timer{}, id).Error
+	return dao.TableWithContext(ctx).Delete(&po.Timer{}, id).Error
 }
 
 func (dao *TimerDao) GetTimerByID(ctx context.Context, timer *po.Timer) error {
-	return dao.db.WithContext(ctx).Table(po.TimerTable).First(timer).Error
+	return dao.TableWithContext(ctx).First(timer).Error
 }
 
 func (dao *TimerDao) DoWithTransactionAndLock(ctx context.Context, id uint, do func(context.Context, *TimerDao, *po.Timer) error) error {
@@ -52,5 +60,27 @@ func (dao *TimerDao) DoWithTransactionAndLock(ctx context.Context, id uint, do f
 }
 
 func (dao *TimerDao) UpdateTimerStatus(ctx context.Context, id uint, timerStatus int) error {
-	return dao.db.WithContext(ctx).Table(po.TimerTable).Where("id=?", id).Update("status", timerStatus).Error
+	return dao.TableWithContext(ctx).Where("id=?", id).Update("status", timerStatus).Error
+}
+
+func (dao *TimerDao) GetTimer(ctx context.Context, opts ...Option) (*po.Timer, error) {
+	db := dao.TableWithContext(ctx)
+	for _, opt := range opts {
+		db = opt(db)
+	}
+	var timer po.Timer
+	return &timer, db.First(&timer).Error
+}
+
+func (dao *TimerDao) GetTimers(ctx context.Context, opts ...Option) ([]*po.Timer, error) {
+	db := dao.TableWithContext(ctx)
+	for _, opt := range opts {
+		db = opt(db)
+	}
+	var timers []*po.Timer
+	return timers, db.Scan(&timers).Error
+}
+
+func (dao *TimerDao) BatchCreateRecords(ctx context.Context, tasks []*po.Task) error {
+	return dao.TableWithContext(ctx).CreateInBatches(tasks, len(tasks)).Error
 }

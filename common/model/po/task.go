@@ -5,6 +5,8 @@ import (
 	"time"
 )
 
+const TaskTable = "task"
+
 // Task 运行流水记录
 type Task struct {
 	gorm.Model

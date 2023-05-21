@@ -2,8 +2,6 @@ package pool
 
 import (
 	"github.com/panjf2000/ants/v2"
-	"time"
-	"timer/common/conf"
 )
 
 type WorkerPool interface {
@@ -14,8 +12,8 @@ type GoWorkerPool struct {
 	pool *ants.Pool
 }
 
-func NewGoWorkerPool(config *conf.PoolConfig) *GoWorkerPool {
-	pool, err := ants.NewPool(config.Size, ants.WithExpiryDuration(time.Duration(config.ExpireSeconds)*time.Second))
+func NewGoWorkerPool(size int) *GoWorkerPool {
+	pool, err := ants.NewPool(size)
 	if err != nil {
 		panic(err)
 	}

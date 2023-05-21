@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `timers`
+CREATE TABLE IF NOT EXISTS `timer`
 (
     `id`                bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
     `app`               varchar(255) NOT NULL COMMENT '应用名',

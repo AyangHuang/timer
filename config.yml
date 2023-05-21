@@ -29,7 +29,3 @@ redis:
 #   idleTimeout: 10
 #   maxActive: 5000
 #   wait: true
-#pool:
-#   size: 10000
-#   expireSeconds: 30
-#   noBlocking: false

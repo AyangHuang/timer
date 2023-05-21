@@ -5,8 +5,12 @@ import (
 )
 
 func main() {
-	webApp := app.GerWebApp()
-	webApp.Start()
+	app.GetMigratorApp().Start()
+
+	app.GetSchedulerApp().Start()
+
+	app.GetWebApp().Start()
+
 	var c chan struct{}
 	<-c
 }
